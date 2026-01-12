@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>福科心靈樹洞🌱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Zen+Maru+Gothic:wght@500;700;900&display=block" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  /* === 核心變數與色彩系統 === */
+  :root {
+    --primary: #8ba7d6;          /* 主色調：療癒藍 */
+    --primary-hover: #7695c9;
+    --accent: #f4a261;           /* 強調色：溫暖橘 */
+    --text-main: #4a5568;        /* 深灰文字 */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    --font-main: 'Zen Maru Gothic', sans-serif;
+    --font-hand: 'Caveat', cursive;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: var(--font-main);
+    background: linear-gradient(-45deg, #e0c3fc, #8ec5fc, #e0c3fc, #cfdef3);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    color: var(--text-main);
+    overflow-x: hidden;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* === UI 元件樣式 === */
+  .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 35px;
+    padding: 2.5rem;
+    box-shadow: var(--glass-shadow);
+    width: 100%;
+    max-width: 550px;
+    position: relative;
+    margin-top: 20px;
+    transition: all 0.5s ease;
+    animation: floatIn 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    color: #2d3748;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.6);
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #718096;
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-family: var(--font-main);
+    background: rgba(255,255,255,0.6);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+    margin-bottom: 18px;
+    transition: 0.3s;
+    outline: none;
+    color: #4a5568;
+  }
+
+  input[type="text"]:focus, textarea:focus {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 5px rgba(139, 167, 214, 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* 按鈕樣式 */
+  .btn-action {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, #a3bded 100%);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--font-main);
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 10px 20px -5px rgba(139, 167, 214, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-action:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(139, 167, 214, 0.6); }
+  .btn-action:active { transform: translateY(-1px) scale(0.98); }
+  .btn-action:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
+
+  .btn-secondary { background: #e2e8f0; color: #4a5568; box-shadow: none; }
+  .btn-secondary:hover { background: #cbd5e0; }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+    box-shadow: 0 10px 20px -5px rgba(252, 129, 129, 0.5);
+  }
+
+  /* 情緒按鈕 */
+  .emotion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+  .btn-mood {
+    background: rgba(255,255,255,0.7); border: 2px solid white; border-radius: 25px; padding: 10px;
+    cursor: pointer; transition: all 0.4s; text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; height: 125px;
+  }
+  .btn-mood:hover { transform: translateY(-8px) scale(1.05); background: white; border-color: var(--primary); }
+  .btn-mood.selected { border-color: var(--primary); background: #ebf8ff; color: #2b6cb0; transform: scale(1.05); }
+  .emoji-icon { font-size: 3rem; margin-bottom: 8px; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.1)); }
+
+  /* 滑桿 */
+  input[type="range"] {
+    -webkit-appearance: none; width: 100%; height: 12px; border-radius: 10px;
+    background: #e2e8f0; outline: none; margin: 15px 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%;
+    background: #fff; border: 4px solid var(--primary); cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  /* 碎紙機樣式 */
+  .shredder-box {
+    background: rgba(255, 240, 240, 0.8); padding: 20px; border-radius: 25px;
+    border: 2px dashed #fc8181; margin-top: 25px;
+  }
+  .btn-shred {
+    background: #fc8181; color: white; padding: 10px 20px; border-radius: 50px;
+    border: none; cursor: pointer; float: right; margin-top: 10px; font-weight: bold;
+    box-shadow: 0 4px 10px rgba(252, 129, 129, 0.3); transition: 0.3s;
+  }
+  .btn-shred:hover { background: #e53e3e; transform: scale(1.05); }
+
+  #shredder-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(40, 44, 52, 0.98); z-index: 10000; display: none;
+    flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
+  }
+
+  .paper-sheet {
+    position: absolute; top: 50px; width: 260px; min-height: 200px;
+    background: #fff; padding: 25px; box-sizing: border-box;
+    font-family: 'Caveat', cursive !important; /* 強制手寫體 */
+    color: #2d3748; font-size: 1.8rem; line-height: 1.3; font-weight: 700;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 50; text-align: center;
+    border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transform: translateY(0); opacity: 1;
+    transition: transform 4s linear, opacity 4s ease-in;
+  }
+
+  .shredder-body {
+    position: relative; width: 320px; height: 80px; background: #2d3748;
+    border-radius: 10px; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); z-index: 100;
+    border-top: 4px solid #4a5568; display: flex; justify-content: center; align-items: center; margin-top: 150px;
+  }
+  .shredder-slot { width: 280px; height: 10px; background: #1a202c; border-radius: 5px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); }
+  .led-light { width: 10px; height: 10px; background: #e53e3e; border-radius: 50%; position: absolute; right: 15px; top: 10px; box-shadow: 0 0 5px #e53e3e; }
+  .led-light.active { background: #48bb78; box-shadow: 0 0 10px #48bb78; animation: blink 0.1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  /* 碎紙動畫狀態 */
+  .paper-sheet.shredding { transform: translateY(450px); opacity: 0; }
+  .shred-strip { position: absolute; top: 330px; width: 6px; background: #fff; z-index: 90; opacity: 0; }
+  @keyframes fallStrip {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(400px) rotate(var(--rot)); opacity: 0; }
+  }
+
+  /* === 全螢幕感謝 === */
+  #final-thank-you-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(139, 167, 214, 0.95), rgba(244, 162, 97, 0.9));
+    z-index: 10002; display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(10px); animation: fadeInOverlay 0.5s ease;
+  }
+  .final-card {
+    background: white; width: 85%; max-width: 400px; padding: 40px;
+    border-radius: 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes fadeInOverlay { from{opacity:0;} to{opacity:1;} }
+  @keyframes popIn { from{transform: scale(0.5); opacity: 0;} to{transform: scale(1); opacity: 1;} }
+
+  /* 成功彈窗 (碎紙機用) */
+  #success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+  .success-box { background: white; width: 85%; max-width: 350px; padding: 30px; border-radius: 30px; text-align: center; animation: popIn 0.5s; }
+
+  /* 音樂懸浮鈕 */
+  .music-control {
+    position: fixed; top: 25px; right: 25px; background: rgba(255,255,255,0.85);
+    width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; cursor: pointer; z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(5px);
+    transition: all 0.3s; font-size: 1.2rem; border: 2px solid white;
+  }
+  .music-control:hover { transform: scale(1.1) rotate(15deg); }
+
+  /* RWD & Steps */
+  .step { display: none; animation: slideUp 0.5s ease; }
+  .step.active { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .progress-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 35px; }
+  .dot { width: 10px; height: 10px; background: rgba(203, 213, 224, 0.5); border-radius: 50%; transition: 0.3s; }
+  .dot.active { background: var(--primary); transform: scale(1.4); }
+
+  /* Admin */
+  .admin-panel { display: none; width: 95%; max-width: 800px; background: white; padding: 25px; margin-top: 20px; border-radius: 20px; z-index: 2000; box-shadow: 0 10px 50px rgba(0,0,0,0.2); }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; font-size: 0.9rem; }
+  .high-risk-row { background: #fff5f5; color: #c53030; font-weight: bold; }
+  
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(50,50,50,0.9); color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 9999; font-size: 0.9rem; backdrop-filter: blur(4px); }
+  #toast.show { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from{opacity:0; transform: translate(-50%, 10px);} to{opacity:1; transform: translate(-50%, 0);} }
+</style>
+</head>
+<body>
+
+<div id="shredder-overlay">
+  <div id="paper-to-shred" class="paper-sheet" style="font-family: 'Caveat', cursive;"></div>
+  
+  <div class="shredder-body">
+    <div class="shredder-slot"></div>
+    <div id="shredder-light" class="led-light"></div>
+  </div>
+  <h3 style="position: absolute; bottom: 100px; color: #a0aec0; opacity: 0.8; z-index: 120;">正在粉碎那些煩人的想法...</h3>
+</div>
+
+<div id="success-overlay">
+  <div class="success-box">
+    <div style="font-size: 4rem; margin-bottom: 10px;">✨</div>
+    <h2 style="color:var(--primary); margin:0; font-size:1.5rem;">煩惱已粉碎！</h2>
+    <p style="color:#718096; line-height:1.6; font-size:1rem; margin-top:10px;">
+      那些惡魔已經消失了！<br>深呼吸，你現在很安全。🍃
+    </p>
+    <button class="btn-action" style="margin-top:20px; padding:12px;" onclick="document.getElementById('success-overlay').style.display='none'">太好了</button>
+  </div>
+</div>
+
+<div id="final-thank-you-overlay">
+  <div class="final-card">
+    <div style="font-size: 4rem; margin-bottom: 15px;">💌</div>
+    <h2 style="color: #4a5568; margin: 0 0 10px 0;">訊息已送達</h2>
+    <p style="color: #718096; line-height: 1.6; margin-bottom: 25px;">
+      謝謝你願意分享。<br>
+      無論今天過得如何，<br>
+      你都做得已經夠好了😎
+    </p>
+    <button class="btn-action" onclick="location.reload()">關閉視窗 (重新開始)</button>
+  </div>
+</div>
+
+<div class="music-control" onclick="forcePlayMusic()" title="播放/暫停音樂">
+  <span id="music-icon">🔇</span>
+</div>
+<audio id="bgm" loop preload="auto">
+  <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112778.mp3" type="audio/mpeg">
+</audio>
+
+<div id="toast">提示訊息</div>
+
+<div class="card">
+  <div class="progress-container">
+    <div class="dot active" id="dot-0"></div>
+    <div class="dot" id="dot-1"></div>
+    <div class="dot" id="dot-2"></div>
+    <div class="dot" id="dot-3"></div>
+  </div>
+
+  <div id="step-0" class="step active">
+    <h2>🌱 歡迎來到福科心靈樹洞</h2>
+    <p class="subtitle">放慢腳步，告訴我們你想說的吧~</p>
+    <div style="background:rgba(255,255,255,0.5); padding:20px; border-radius:20px; margin-bottom:25px; color:#5a67d8; font-size:0.95rem; border:1px solid rgba(255,255,255,0.8);">
+      <i class="fas fa-headphones-alt"></i> <b>小提醒：</b><br>
+      建議戴上耳機，體驗會更好喔。<br>
+      內容只有老師看得到，請放心。
+    </div>
+    <input type="text" id="sid" inputmode="numeric" placeholder="請輸入班級座號 (例: 80512)">
+    <input type="text" id="sname" placeholder="怎麼稱呼你呢？">
+    <button class="btn-action" onclick="startCheck()">準備好了，開始</button>
+  </div>
+
+  <div id="step-1" class="step">
+    <h2 id="greeting-text">現在的感覺像什麼？</h2>
+    <p class="subtitle">跟隨你的直覺選一個</p>
+    <div class="emotion-grid" id="emotion-grid"></div>
+    <button class="btn-action btn-secondary" style="margin-top:20px;" onclick="switchStep(0)">回上一頁</button>
+  </div>
+
+  <div id="step-2" class="step">
+    <h2 id="step2-title">今日氣象：未知</h2>
+    
+    <div style="background:rgba(255,255,255,0.5); padding:20px; border-radius:20px; text-align:center; margin-bottom:20px; border:2px solid rgba(0, 0, 0, 0.103);">
+      <div id="slider-text" style="font-size:1.2rem; font-weight:bold; color:var(--primary); transition:0.3s;">心情強度：5 (還好)</div>
+      <input type="range" id="intensity" min="1" max="10" value="5" oninput="updateSlider(this.value)">
+      <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#a0aec0; margin-top:5px;">
+        <span>☁️ 淡淡的</span><span>⚡ 強烈雷雨</span>
+      </div>
+    </div>
+
+    <div style="background:rgba(255, 250, 240, 0.9); padding:25px; border-radius:25px; text-align:center; margin-bottom:20px; border:2px dashed #f6e05e;">
+      <p id="battery-title" style="font-weight:bold; margin-bottom:5px; color:#d69e2e;">⚡ 身體能量電池 (體力)：</p>
+      <div style="display:flex; justify-content:center; margin:10px 0;">
+        <div style="width:120px; height:40px; border:3px solid #4a5568; border-radius:10px; padding:3px; position:relative; background:white; display:inline-block;">
+          <div id="battery-fill" style="height:100%; width:50%; background:#48bb78; border-radius:5px; transition:width 0.3s ease, background-color 0.3s ease;"></div>
+          <div style="position:absolute; right:-7px; top:10px; width:5px; height:14px; background:#4a5568; border-radius:0 3px 3px 0;"></div>
+        </div>
+      </div>
+      <div id="battery-text" style="font-weight:bold; color:#48bb78;">50%</div>
+      <input type="range" id="battery-level" min="0" max="100" value="50" step="10" oninput="updateBattery(this.value)">
+    </div>
+
+    <div style="margin-top:25px;">
+      <p style="font-weight:bold; color:var(--primary); margin-bottom:8px;">💡 當下的小小練習：</p>
+      <p style="color:#718096; margin-top:0; font-size:0.9rem;">現在做哪一件<b>小事</b>，可以讓自己舒服 1%？</p>
+      <textarea id="small-step-note" style="width: 100%;             /* 讓寬度佔滿 */
+      height: 100px;           /*稍微加高一點，更好寫*/
+      padding: 12px;           /* 內距，文字才不會貼邊 */
+      border: 2px solid #7eade2; /* 顯眼的藍色邊框 */" placeholder="例如：趴下來 5 分鐘、喝杯冰水、聽一首歌..."></textarea>
+    </div>
+
+    <div class="shredder-box">
+      <p style="font-weight:bold; margin-bottom:8px; color:#c53030;">🗑️ 煩惱碎紙機：</p>
+      <textarea id="worry-text" style="width:100%; border:none; background:transparent; font-size:1rem; color:#c53030; outline:none; resize:none;" rows="2" placeholder="把討厭的想法打在這裡... (點擊右下角按鈕粉碎它)"></textarea>
+      <button class="btn-shred" onclick="shredWorry()">👋 啟動碎紙機</button>
+      <div style="clear:both;"></div>
+    </div>
+
+    <label style="display:flex; align-items:center; gap:10px; padding:15px; background:rgba(255,255,255,0.8); border-radius:15px; cursor:pointer; margin-top:20px;">
+      <input type="checkbox" id="need-talk" style="width:20px; height:20px; accent-color:#e53e3e;"> 
+      <span style="font-weight:700; color:#4a5568;">🙋 我希望老師之後找我聊聊</span>
+    </label>
+
+    <div style="display:flex; gap:15px;">
+      <button class="btn-action btn-secondary" onclick="switchStep(1)">上一步</button>
+      <button class="btn-action" onclick="processStep2()">下一步</button>
+    </div>
+  </div>
+
+  <div id="step-3" class="step">
+    <h2 style="color:#c53030;">⚠️ 稍微暫停一下</h2>
+    <p class="subtitle">回想一下最近兩週 有以下這些狀況嗎？</p>
+    <div id="risk-list"></div>
+    <button class="btn-action btn-danger" onclick="submitRisk()">完成檢測</button>
+  </div>
+
+  <div id="step-4" class="step">
+    <div id="result-area"></div>
+    
+    <div style="background:#f0f4f8; border-left:5px solid #76a9fa; padding:15px; margin-top:20px; border-radius:10px;">
+      <b>🌲 神秘樹洞 (同學的悄悄話)：</b>
+      <p id="tree-hole-msg" style="margin-top:5px; color:#4a5568; font-style:italic;">Loading...</p>
+    </div>
+
+    <div id="vitamin-section" style="perspective:1000px; width:100%; height:160px; cursor:pointer; margin-top:25px;" onclick="drawVitamin()">
+      <div class="vitamin-inner" style="position:relative; width:100%; height:100%; text-align:center; transition:transform 0.8s; transform-style:preserve-3d;">
+        <div class="vitamin-front" style="position:absolute; width:100%; height:100%; backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:20px; box-shadow:0 10px 20px rgba(0,0,0,0.1); border:3px solid #f6e05e; background:#fffaf0;">
+          <span style="font-size:3rem;">💊</span>
+          <b style="color:#d69e2e; margin-top:10px;">點我抽取今日「心靈維他命」</b>
+        </div>
+        <div class="vitamin-back" style="position:absolute; width:100%; height:100%; backface-visibility:hidden; transform:rotateY(180deg); background:white; padding:15px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:20px; border:3px solid #f6e05e;">
+          <div id="vitamin-text" style="font-weight:bold; color:#d69e2e; font-size:1.1rem; line-height:1.5;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:25px; padding-top:20px; border-top:1px dashed #cbd5e0;">
+      <h4 id="final-prompt">💬 還想跟老師說什麼嗎？</h4>
+      <textarea id="final-msg" style="height:80px;" placeholder="這裡可以寫任何你想說的、想問的..."></textarea>
+      <button class="btn-action" style="padding:12px; font-size:1rem;" onclick="sendFinalMsg(this)">送出給老師 ❤️</button>
+    </div>
+
+    <div style="margin-top:30px; text-align:center; color:#a0aec0; font-size:0.85rem;">
+      <p>福科輔導室永遠支持你</p>
+      <p>踹共(少年)專線： 0800-001769 | 24小時安心專線：1925 | 生命線：1995</p>
+      <p>兒福聯盟 LINE@線上聊：在LINE搜尋 @youthline_cwlf
+      
+    </div>
+    <button class="btn-action btn-secondary" onclick="location.reload()" style="margin-top:15px;">關閉視窗</button>
+  </div>
+</div>
+
+<div class="admin-trigger" style="text-align:center; margin-top:20px;">
+  <button onclick="toggleAdmin()" style="background:rgba(255,255,255,0.3); border:1px solid white; color:#4a5568; cursor:pointer; padding:5px 15px; border-radius:15px;">[ 杜皮老師說不可以點這裡！ ]</button>
+</div>
+<div id="admin-panel" class="admin-panel">
+  <h3 style="margin:0 0 15px 0;">📊 學生心情數據庫<button onclick="downloadCSV()" style="background:#2b6cb0; color:white; border:none; padding:5px 10px; margin-left:10px; border-radius:4px; cursor:pointer;">
+  📥 匯出 Excel
+</button>
+</h3>
+  <table id="data-table"><thead><tr><th>時間</th><th>學生</th><th>狀態</th><th>筆記/留言</th><th>風險</th></tr></thead><tbody></tbody></table>
+</div>
+
+<script>
+/* === Javascript 邏輯 === */
+
+const moodApp = {
+  user: {},
+  data: { emotion: null, intensity: 5, battery: 50, action: '', note: '', risk: null },
+  history: [], 
+  emotions: [
+    { id: 'happy', label: '開心 / 興奮', weather:'晴朗', icon: '😆', bg: 'linear-gradient(120deg, #f6d365 0%, #fda085 100%)', quote: "太棒了！你的快樂是這世界的一道光！✨", tip: "試著把你今天發生的一件好事寫在便條紙上，貼在書桌前。" },
+    { id: 'calm', label: '平靜 / 放鬆', weather:'微風', icon: '😌', bg: 'linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)', quote: "平穩就是力量，享受這份寧靜吧。🍵", tip: "趁現在心很靜，花3分鐘專注呼吸，把這份平靜的感覺記在大腦裡。" },
+    { id: 'warm', label: '溫暖 / 被愛', weather:'暖陽', icon: '🥰', bg: 'linear-gradient(120deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)', quote: "被愛的感覺真好！你也值得這份溫暖。❤️", tip: "接收到愛之後，試著把它傳出去。傳個貼圖給一個你也想關心的人。" },
+    { id: 'tired', label: '疲累 / 無力', weather:'陰天', icon: '🤒', bg: 'linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)', quote: "辛苦了，沒電的時候就允許自己躺平吧。💤", tip: "【低耗能模式】 今天的任務就是「放過自己」。允許自己今晚早睡半小時。" },
+    { id: 'confused', label: '困惑 / 迷惘', weather:'起霧', icon: '😵‍💫', bg: 'linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)', quote: "迷惘代表你在思考，答案會慢慢浮現的。🧭", tip: "【大腦卸載】 腦袋太亂嗎？拿一張紙，把煩惱全部寫下來，然後把它揉成一團丟進垃圾桶。" },
+    { id: 'anxious', label: '焦慮 / 緊張', weather:'陣雨', icon: '😖', bg: 'linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)', quote: "深呼吸... 吸氣... 吐氣... 你比想像中更強大。🌊", tip: "【著地練習】 找出房間裡 5 個顏色、摸 4 種觸感、聽 3 種聲音。" },
+    { id: 'sad', label: '難過 / 想哭', weather:'暴雨', icon: '😢', bg: 'linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)', quote: "眼淚是心靈的雨水，下過雨後會比較清澈的。☔", tip: "【蝴蝶擁抱】 雙手交叉放在胸前，左右交替輕輕拍打自己的肩膀。" },
+    { id: 'angry', label: '生氣 / 憤怒', weather:'雷電', icon: '😡', bg: 'linear-gradient(120deg, #ff0844 0%, #ffb199 100%)', quote: "你的生氣是有原因的，先讓火氣降溫一下。🔥", tip: "【能量釋放】 去用力捏爆氣泡紙，或是用力握緊拳頭 5 秒再瞬間放鬆。" },
+    { id: 'boring', label: '無聊 / 悶', weather:'多雲', icon: '🥱', bg: 'linear-gradient(to top, #d299c2 0%, #fef9d7 100%)', quote: "無聊或許是大腦想休息，也或許是想找樂子。🎈", tip: "試著做一件平常不會做的小事：例如用左手刷牙。" }
+  ],
+  riskQuestions: [
+    { text: '不想吃東西，或壓力大一直狂吃？', score: 1 },
+    { text: '睡不著、很早醒，或是睡很久都睡不飽？', score: 1 },
+    { text: '覺得心情不好、想哭，或悶悶不樂？', score: 1 },
+    { text: '覺得比以前更容易生氣、看什麼都不順眼？', score: 1 },
+    { text: '不想跟別人說話，不想出門？', score: 1 },
+    { text: '對原本喜歡的事（如社團、電動）變沒興趣？', score: 1 },
+    { text: '覺得身體很不舒服（頭痛、肚子痛）但找不到原因？', score: 1 },
+    { text: '做事提不起勁，覺得身體很重、很累？', score: 1 },
+    { text: '覺得自己很沒用、很糟糕，或是對不起別人？', score: 1 },
+    { text: '腦袋空空，上課很難專心，或是記不住事情？', score: 1 },
+    { text: '曾經有過「想結束生命」或「想消失」的念頭？', isRedFlag: true }
+  ],
+  vitamins: [
+    "你不需要做到完美，你只需要做你自己。", "休息不是偷懶，是為了走更長遠的路。",
+    "每一朵花開的時間都不一樣，你也一樣。", "這也會過去的，你比你想像的還要堅強。",
+    "今天的你，已經做得很好了。", "允許自己有情緒，這是生而為人的權利。",
+    "只要還在呼吸，就有改變的可能。"
+  ],
+  peerQuotes: [
+    "我也是這樣，考前焦慮到想吐，但考完就沒事了！", "雖然不認識你，但想跟你說聲加油。",
+    "有時候，什麼都不做也是一種選擇。", "哭出來沒關係，我上次也躲在被子裡哭。"
+  ]
+};
+
+window.onload = function() {
+  const savedData = localStorage.getItem('moodHistory_V17');
+  if (savedData) {
+    moodApp.history = JSON.parse(savedData);
+    updateAdmin();
+  }
+  updateSlider(5);
+  updateBattery(50);
+};
+
+/* === 音樂控制 === */
+let isMusicPlaying = false;
+function forcePlayMusic() {
+  const bgm = document.getElementById('bgm');
+  const icon = document.getElementById('music-icon');
+  
+  if (isMusicPlaying) {
+    bgm.pause();
+    icon.innerText = "🔇";
+    isMusicPlaying = false;
+  } else {
+    bgm.volume = 0.4;
+    bgm.play().then(() => {
+        icon.innerText = "🎵";
+        isMusicPlaying = true;
+        showToast("播放溫暖放鬆音樂 ♪");
+    }).catch(e => {
+        showToast("請先點擊頁面再播放音樂");
+    });
+  }
+}
+
+/* === 碎紙機功能 (修復同步問題) === */
+function playShredSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  const ctx = new AudioContext();
+  const bufferSize = ctx.sampleRate * 2.5; 
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1000;
+  const gainNode = ctx.createGain();
+  gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2.5);
+  noise.connect(filter);
+  filter.connect(gainNode);
+  gainNode.connect(ctx.destination);
+  noise.start();
+}
+
+function shredWorry() {
+  const text = document.getElementById('worry-text').value;
+  if (!text) return showToast("寫點什麼再丟掉吧？");
+
+  const overlay = document.getElementById('shredder-overlay');
+  const paper = document.getElementById('paper-to-shred');
+  const light = document.getElementById('shredder-light');
+  const bgm = document.getElementById('bgm');
+  const successOverlay = document.getElementById('success-overlay');
+  
+  paper.innerText = text;
+  paper.classList.remove('shredding'); 
+  overlay.style.display = 'flex'; 
+  
+  if(isMusicPlaying) bgm.pause();
+  
+  void paper.offsetWidth; 
+
+  // 1. 先開始紙張動畫
+  setTimeout(() => {
+    paper.classList.add('shredding'); 
+  }, 100);
+
+  // 2. 延遲 1.6 秒後 (紙剛好碰到碎紙機)，才開始聲音與燈光
+  setTimeout(() => {
+    light.classList.add('active'); 
+    playShredSound();
+    
+    // 3. 噴出紙屑
+    setTimeout(() => {
+        const count = 40; 
+        for(let i=0; i<count; i++) {
+            setTimeout(() => { createRealStrip(overlay); }, Math.random() * 1500); 
+        }
+    }, 200); 
+
+  }, 1600);
+
+  moodApp.data.note += ` [碎紙機: ${text}]`; 
+  document.getElementById('worry-text').value = ""; 
+
+  // 4. 全部結束，顯示成功畫面
+  setTimeout(() => { 
+    overlay.style.display = 'none'; 
+    light.classList.remove('active');
+    document.querySelectorAll('.shred-strip').forEach(el => el.remove());
+    if(isMusicPlaying) bgm.play().catch(e => console.log(e));
+    successOverlay.style.display = 'flex'; 
+  }, 4500); 
+}
+
+function createRealStrip(container) {
+  const strip = document.createElement('div');
+  strip.className = 'shred-strip';
+  const centerOffset = (Math.random() - 0.5) * 260; 
+  strip.style.left = `calc(50% + ${centerOffset}px)`;
+  strip.style.height = `${20 + Math.random() * 30}px`;
+  strip.style.width = `${4 + Math.random() * 4}px`;
+  strip.style.setProperty('--rot', `${(Math.random() - 0.5) * 720}deg`);
+  strip.style.backgroundColor = Math.random() > 0.5 ? '#fff' : '#f0f0f0';
+  strip.style.animation = `fallStrip ${1.5 + Math.random()}s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+  container.appendChild(strip);
+}
+
+/* === 基本功能 === */
+function updateSlider(val) {
+  const t = document.getElementById('slider-text');
+  t.innerText = `心情強度：${val}`;
+  t.style.color = val > 7 ? '#e53e3e' : '#8ba7d6';
+  moodApp.data.intensity = val;
+}
+
+function updateBattery(val) {
+  const fill = document.getElementById('battery-fill');
+  const text = document.getElementById('battery-text');
+  moodApp.data.battery = val;
+  text.innerText = val + "%";
+  fill.style.width = val + "%";
+  fill.style.backgroundColor = val <= 30 ? '#e53e3e' : (val <= 60 ? '#ecc94b' : '#48bb78');
+  text.style.color = fill.style.backgroundColor;
+}
+
+function startCheck() {
+  const id = document.getElementById('sid').value;
+  const name = document.getElementById('sname').value;
+  if(!id || !name) return showToast("請先輸入班級與姓名 (ゝ∀･)");
+  moodApp.user = { id, name };
+  
+  // === 客製化名稱帶入邏輯 ===
+  // 1. 修改首頁招呼語
+  document.getElementById('greeting-text').innerHTML = `Hi <b style="color:var(--primary)">${name}</b>，<br>現在的感覺像什麼？`;
+  
+  // 2. 修改能量電池標題
+  document.getElementById('battery-title').innerHTML = `⚡ <b>${name}</b> 的能量電池 (體力)：`;
+  
+  // 3. 修改最後留言的問句
+  document.getElementById('final-prompt').innerHTML = `💬 <b>${name}</b>，還想跟老師說什麼嗎？`;
+  
+  forcePlayMusic();
+  switchStep(1);
+  renderEmotions();
+}
+
+function renderEmotions() {
+  const grid = document.getElementById('emotion-grid');
+  grid.innerHTML = '';
+  moodApp.emotions.forEach(e => {
+    const btn = document.createElement('div');
+    btn.className = 'btn-mood';
+    btn.innerHTML = `<span class="emoji-icon">${e.icon}</span><span style="font-weight:700; color:#555;">${e.label}</span>`;
+    btn.onclick = () => selectEmotion(e, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function selectEmotion(emotion, btn) {
+  moodApp.data.emotion = emotion;
+  document.body.style.background = emotion.bg; 
+  document.body.style.backgroundSize = "400% 400%";
+  document.body.style.animation = "gradientBG 15s ease infinite";
+
+  document.querySelectorAll('.btn-mood').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('step2-title').innerHTML = `今日氣象：${emotion.weather} ${emotion.icon}`;
+  setTimeout(() => { switchStep(2); }, 300);
+}
+
+function processStep2() {
+  moodApp.data.action = document.getElementById('small-step-note').value;
+  moodApp.data.needTalk = document.getElementById('need-talk').checked;
+  const negTypes = ['sad', 'anxious', 'angry', 'tired', 'confused'];
+  if (negTypes.includes(moodApp.data.emotion.id) && moodApp.data.intensity >= 6) {
+    renderRiskList();
+    switchStep(3);
+  } else {
+    finish(false);
+  }
+}
+
+function renderRiskList() {
+  const list = document.getElementById('risk-list');
+  list.innerHTML = '';
+  moodApp.riskQuestions.forEach(q => {
+    const item = document.createElement('label');
+    item.className = 'risk-item';
+    item.style.cssText = "background:rgba(255,255,255,0.8); padding:15px; border-radius:15px; border:1px solid rgba(226, 232, 240, 0.8); margin-bottom:10px; transition:0.2s; display:block; cursor:pointer;";
+    const labelText = q.isRedFlag ? `<b style="color:#c53030">${q.text}</b>` : q.text;
+    item.innerHTML = `<input type="checkbox" ${q.isRedFlag?'data-red="true"':''} style="margin-right:10px; transform:scale(1.2); accent-color:#e53e3e;"><span>${labelText}</span>`;
+    
+    item.onmouseover = () => { item.style.background = "#fff5f5"; item.style.borderColor = "#feb2b2"; };
+    item.onmouseout = () => { item.style.background = "rgba(255,255,255,0.8)"; item.style.borderColor = "rgba(226, 232, 240, 0.8)"; };
+    
+    list.appendChild(item);
+  });
+}
+
+function submitRisk() {
+  let score = 0, isRed = false;
+  document.querySelectorAll('#risk-list input:checked').forEach(cb => {
+    score++; if(cb.dataset.red === "true") isRed = true;
+  });
+  const isHighRisk = isRed || score >= 5;
+  moodApp.data.risk = { count: score, isRed, isHigh: isHighRisk };
+  finish(isHighRisk);
+}
+
+function finish(isHighRisk) {
+  const { emotion } = moodApp.data;
+  const resultDiv = document.getElementById('result-area');
+  saveData(isHighRisk);
+  
+  const randomPeer = moodApp.peerQuotes[Math.floor(Math.random() * moodApp.peerQuotes.length)];
+  document.getElementById('tree-hole-msg').innerText = `"${randomPeer}"`;
+
+  // === 客製化名稱帶入結果頁 ===
+  const greetingName = `<b>${moodApp.user.name}</b>`;
+
+  if (isHighRisk) {
+    resultDiv.innerHTML = `
+      <div style="background:#fff5f5; border:2px solid #fc8181; border-radius:20px; padding:20px; text-align:center;">
+        <h3 style="color:#c53030; margin:0;">🛑 我們非常重視你的感受</h3>
+        <p style="color:#4a5568; margin-top:10px;">系統注意到 ${greetingName} 的壓力指數較高，<br>建議你尋求信任的大人們、輔導室幫忙或聊聊。<br>
+        <br>⚠如果你的痛苦已經快壓垮你，甚至讓你想「離開世界」<br>
+        請馬上找信任的人求助！或點擊下方按鈕撥打生命線！</p>
+
+        <a href="tel:1995" style="display:inline-block; background:#e53e3e; color:white; text-decoration:none; padding:10px 20px; border-radius:50px; font-weight:bold; margin-top:10px;">📞 1995 生命線</a>
+      </div>`;
+  } else {
+    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#ff9a9e', '#fad0c4', '#a18cd1'] });
+    resultDiv.innerHTML = `
+      <h2 style="color:var(--primary)">收到 ${greetingName} 的心情了 (´▽\`ʃ♡ƪ)</h2>
+      <p style="text-align:center; font-style:italic; color:#718096;">"${emotion.quote}"</p>
+      <div style="background:#f0fff4; border:2px dashed #68d391; border-radius:20px; padding:15px; margin-top:15px; display:flex; align-items:center; gap:10px;">
+        <div style="font-size:2rem;">🎁</div>
+        <div>
+          <h4 style="margin:0 0 5px 0; color:#2f855a;">給你的小小任務</h4>
+          <div style="color:#276749; font-size:0.95rem;">${emotion.tip}</div>
+        </div>
+      </div>`;
+  }
+  switchStep(4);
+}
+
+function drawVitamin() {
+  const container = document.getElementById('vitamin-section');
+  if(container.querySelector('.vitamin-inner').style.transform === 'rotateY(180deg)') return;
+  const textEl = document.getElementById('vitamin-text');
+  const randomMsg = moodApp.vitamins[Math.floor(Math.random() * moodApp.vitamins.length)];
+  textEl.innerText = randomMsg;
+  container.querySelector('.vitamin-inner').style.transform = 'rotateY(180deg)';
+  confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 }, scalar: 0.7 });
+}
+
+function sendFinalMsg(btn) {
+  const msg = document.getElementById('final-msg').value;
+  if(!msg) return showToast("內容是空的喔～");
+  
+  const lastIdx = moodApp.history.length - 1;
+  if(lastIdx >= 0) {
+    moodApp.history[lastIdx].note += ` [留言: ${msg}]`;
+    localStorage.setItem('moodHistory_V17', JSON.stringify(moodApp.history));
+  }
+  updateAdmin();
+  const updateData = {
+    action: "append_note", // 這是通關密語
+    student: `${moodApp.user.id} ${moodApp.user.name}`,
+    note: `[留言: ${msg}]`,
+    time: new Date().toLocaleString()
+  };
+
+  // 發射！
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updateData)
+  })
+  .then(() => {
+    alert("留言已補充給老師囉！(๑•̀ㅂ•́)و✧");
+    if(btn) btn.disabled = true; // 防止重複按
+    document.getElementById('final-msg').value = ''; // 清空輸入框
+  })
+  .catch(err => {
+    console.error("雲端補留言失敗", err);
+    alert("留言存在本地了，但雲端連線怪怪的～");
+  });
+  
+  // 顯示全螢幕感謝動畫
+  document.getElementById('final-thank-you-overlay').style.display = 'flex';
+}
+
+/* === 資料存取 (V6.0 雲端同步版) === */
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWQOxG_LN3QnBa7LY_YDZa07aRtwCC9pFDVcN6VvZeEgi7Q4p4oq9GuBoU9jBYZsRNFA/exec"; // <--- 記得貼上！
+
+function saveData(isHighRisk) {
+  // --- 1. 準備資料 (邏輯不變) ---
+  let riskLabel = "🟢 一般";
+  if (moodApp.data.risk) {
+    if (moodApp.data.risk.isRed) riskLabel = "🔴 危險";
+    else if (moodApp.data.risk.isHigh) riskLabel = "🟠 高關懷";
+    else riskLabel = "🟡 有困擾";
+  }
+
+  let finalNote = moodApp.data.note || "";
+  if(moodApp.data.needTalk) finalNote = "[求助] " + finalNote;
+
+  // 建立要存檔的物件
+  let record = {
+    time: new Date().toLocaleString(),
+    student: `${moodApp.user.id} ${moodApp.user.name}`,
+    emotion: moodApp.data.emotion ? moodApp.data.emotion.label : "未選擇",
+    intensity: Number(moodApp.data.intensity) || 0,
+    battery: Number(moodApp.data.battery) || 0,
+    action: moodApp.data.action || "無",
+    risk: riskLabel,
+    note: finalNote
+  };
+
+  // --- 2. 本地存檔 (原本的功能) ---
+  moodApp.history.push(record);
+  localStorage.setItem('moodHistory_V17', JSON.stringify(moodApp.history));
+  updateAdmin();
+
+  // --- 3. 發射到 Google 雲端 (新增的功能) ---
+  // 使用 fetch 發送請求
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors", // 這是關鍵！避開瀏覽器的跨域檢查
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(record)
+  })
+  .then(() => {
+    console.log("雲端備份成功！");
+    // 可以在這裡加個小提示，例如 Toast
+  })
+  .catch(err => {
+    console.error("雲端上傳失敗：", err);
+    alert("⚠️ 注意：雲端備份失敗，請檢查網路連線。但本地紀錄已保存。");
+  });
+
+  // 提示成功 (本地)
+  alert("紀錄已儲存！(同步上傳中...)");
+}
+
+/* === 後台管理 (V5.1 全欄位顯示版) === */
+function updateAdmin() {
+  // 1. 先修正表頭 (確保上方標題跟下方資料對齊)
+  const thead = document.querySelector('#data-table thead tr');
+  if(thead) {
+    thead.innerHTML = `
+      <th>時間</th>
+      <th>學生</th>
+      <th>情緒</th>
+      <th>強度</th>
+      <th>電量</th>
+      <th>行動</th>
+      <th>留言</th>
+      <th>風險</th>
+    `;
+  }
+
+  // 2. 更新表格內容
+  const tbody = document.querySelector('#data-table tbody');
+  tbody.innerHTML = '';
+  
+  [...moodApp.history].reverse().forEach(r => {
+    const tr = document.createElement('tr');
+    
+    // 風險高亮顯示邏輯
+    if (r.risk && (r.risk.includes('🔴') || r.risk.includes('🟠'))) {
+      tr.className = 'high-risk-row';
+    } else if (r.note && r.note.includes('[求助]')) {
+      tr.className = 'high-risk-row';
+    }
+
+    // 防呆處理：舊資料可能沒有這些欄位，給個預設值
+    const valIntensity = r.intensity !== undefined ? r.intensity : "-";
+    const valBattery = r.battery !== undefined ? r.battery + "%" : "-";
+    const valAction = r.action || "-";
+
+    // 填入 8 個欄位 (對應上面的表頭)
+    tr.innerHTML = `
+      <td>${r.time}</td>
+      <td>${r.student}</td>
+      <td>${r.emotion}</td>
+      <td style="text-align:center; font-weight:bold; color:#555;">${valIntensity}</td>
+      <td style="text-align:center; color:#2b6cb0;">${valBattery}</td>
+      <td style="font-size:0.9em;">${valAction}</td>
+      <td>${r.note}</td>
+      <td>${r.risk}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* === 匯出 Excel 功能 === */
+function downloadCSV() {
+  let csvContent = "\uFEFF時間,學生,情緒,強度,電量,行動,風險,留言\n";
+  
+  moodApp.history.forEach(row => {
+    let r_note = `"${(row.note || "").replace(/"/g, '""')}"`; // 處理逗號與引號
+    csvContent += `${row.time},${row.student},${row.emotion},${row.intensity},${row.battery},${row.action},${row.risk},${r_note}\n`;
+  });
+
+  const link = document.createElement("a");
+  link.href = "data:text/csv;charset=utf-8," + encodeURI(csvContent);
+  link.download = "福科心情數據.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function switchStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i <= n));
+  window.scrollTo(0, 0);
+}
+
+function toggleAdmin() {
+  const p = document.getElementById('admin-panel');
+  if(p.style.display === 'block') { p.style.display = 'none'; } 
+  else {
+    if(prompt("魔鏡ㄚ魔鏡，誰是世界上最帥的老師？")==='1017') {
+      p.style.display = 'block';
+      if(!document.getElementById('btn-clear')) {
+          const btn = document.createElement('button');
+          btn.id = 'btn-clear';
+          btn.innerText = "清空資料庫";
+          btn.style = "background:#c53030; color:white; border:none; padding:5px; margin-left:10px;";
+          btn.onclick = () => {
+             if(confirm("確定刪除所有資料？")) {
+                 moodApp.history = [];
+                 localStorage.removeItem('moodHistory_V17');
+                 updateAdmin();
+             }
+          };
+          document.querySelector('#admin-panel h3').appendChild(btn);
+      }
+    }
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.innerText = msg; t.className = "show";
+  setTimeout(() => t.className = "", 3000);
+}
+</script>
+<style>
+  /* 1. 背景遮罩：黑底半透明，強制蓋住所有內容 */
+  #consent-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 深黑色背景，不讓看後面 */
+    z-index: 99999; /* 確保層級最高，蓋過所有原本網頁 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* 背景模糊效果，增加質感 */
+  }
+
+  /* 2. 聲明卡片本體 */
+  .consent-card {
+    background: #fae6f2b0;
+    width: 90%;
+    max-width: 500px; /* 電腦版最大寬度 */
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+   font-family: 'Zen Maru Gothic', "Microsoft JhengHei", sans-serif;
+    font-weight: 500; /* 稍微加粗，像麥克筆 */
+    letter-spacing: 0.5px; /* 字距寬一點，比較輕鬆 */
+    
+    text-align: left;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border-top: 6px solid #ac06069d;
+  }
+
+  /* 3. 標題與內文樣式 */
+  .consent-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .consent-body p {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .consent-highlight {
+    background-color: #fff3cd;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #856404;
+  }
+
+  .consent-alert {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+
+  /* 4. 按鈕樣式 */
+  .consent-btn-area {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  #agree-btn {
+    background-color: #ccc; /* 一開始灰色，不能按 */
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 50px;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
+    width: 100%;
+    font-weight: bold;
+    pointer-events: none; /* 禁止點擊 */
+  }
+
+  /* 啟用狀態的按鈕 (由 JS 控制) */
+  #agree-btn.active {
+    background-color: #145730; /* 綠色 */
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+  }
+  
+  #agree-btn.active:hover {
+    background-color: #0c331c;
+  }
+
+</style>
+
+<div id="consent-overlay">
+  <div class="consent-card">
+    <div class="consent-title">📋 開始使用前請先讀我</div>
+    
+   <div class="consent-body">
+      <p>歡迎來到福科心靈樹洞！為了保護你，請確認以下幾點：</p>
+      
+      <p><strong>1. ⚠️ 這不是即時求助系統</strong><br>
+      老師可能無法立刻回覆。如果你現在想傷害自己或別人，請<span class="consent-alert">立刻放下手機，直接找輔導室老師或撥打 113 / 1925</span>。</p>
+      
+      <p><strong>2. 🔒 保密有例外</strong><br>
+      我們會保護隱私，但若涉及<span class="consent-highlight">生命危險、性平或法律規定</span>，我們必須通報以保護你的安全。</p>
+      
+      <p><strong>3. 🆔 請用真實身分</strong><br>
+      請勿冒用他人，否則我們無法提供協助。</p>
+
+ <hr style="border:0; border-top:1px dashed #ddd; margin:15px 0;">
+      
+      <p style="font-size: 0.9rem; color: #666; text-align: center;">
+        點擊下方按鈕即代表你同意以上內容。
+      </p>
+<div class="consent-btn-area">
+      <button id="agree-btn">請閱讀內容 (5)</button>
+    </div>
+
+      <div style="background-color: #ebd6d6; padding: 20px; margin: 15px 0; border-radius: 10px; text-align: center;">
+        <p style="margin: 0 0 8px 0; color: #333; font-weight: bold; font-size: 1.1rem;">
+            🤖 害羞找老師？試試「小杜同學」
+        </p>
+        <p style="margin: 0 0 15px 0; color: #666; font-size: 0.95rem;">
+            有些話不適合告訴別人，自己憋著又好難受？<br>
+            試試你的 AI 夥伴，陪你聊天、聽你說心事❤
+        </p>
+        
+        <a href="https://gemini.google.com/gem/1tVewN2AZmRwPpQxYZdt4G8x3P_oI_X4-?usp=sharing" target="_blank" style="display:inline-block; background-color:#ec8e8e; color:white; text-decoration:none; padding:8px 25px; border-radius:50px; font-size:0.95rem; font-weight:bold; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3); transition: transform 0.2s;">
+          👉 點我找小杜同學聊天
+        </a>
+      </div>
+      
+     
+    </div>
+
+    
+  </div>
+</div>
+
+<script>
+  // 杜的貼身助理 - 邏輯控制區
+  (function() {
+    const btn = document.getElementById('agree-btn');
+    const overlay = document.getElementById('consent-overlay');
+    let timeLeft = 5; // 強制閱讀秒數：5秒
+
+    // 1. 倒數計時邏輯 (避免學生看都不看直接按掉)
+    const timer = setInterval(() => {
+      timeLeft--;
+      if (timeLeft > 0) {
+        btn.innerText = `請閱讀內容 (${timeLeft})`;
+      } else {
+        clearInterval(timer);
+        btn.innerText = "我瞭解並同意，進入樹洞 > <";
+        btn.classList.add('active'); // 變綠色
+      }
+    }, 1000);
+
+    // 2. 點擊同意後的動作
+    btn.addEventListener('click', function() {
+      // 這裡使用 sessionStorage，代表「這次瀏覽器沒關閉前」算同意過一次
+      // 如果你想「每次重新整理頁面」都要跳出來，就把下面這行註解掉
+      sessionStorage.setItem('du_consent_agreed', 'true');
+      
+      // 淡出效果
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity 0.5s ease';
+      
+      // 移除元素
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 500);
+    });
+
+    // 3. (選用) 檢查是否已經同意過？
+    // 如果你希望學生「只要瀏覽器沒關，跳到別頁再回來首頁」不用重看，就保留這段。
+    // 如果你希望「不管怎樣每次回首頁都要重看」，請把下面這三行刪掉 (Delete)。
+    if (sessionStorage.getItem('du_consent_agreed') === 'true') {
+       // overlay.style.display = 'none'; // 這一行解除註解就會啟用「記憶功能」
+    }
+
+  })();
+</script>
+</body>
+</html>
